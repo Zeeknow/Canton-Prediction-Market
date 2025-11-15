@@ -1,3 +1,40 @@
+## 📂 Project Structure
+
+```
+.
+├── README.md
+├── eslint.config.js
+├── index.html
+├── package-lock.json
+├── package.json
+├── postcss.config.cjs
+├── postcss.config.js
+├── public
+│   └── vite.svg
+├── src
+│   ├── AdminDashboard.tsx
+│   ├── App.css
+│   ├── App.tsx
+│   ├── PredictorDashboard.tsx
+│   ├── assets
+│   │   └── react.svg
+│   ├── components
+│   │   ├── Header.tsx
+│   │   ├── MarketCard.tsx
+│   │   └── SequencerPanel.tsx
+│   ├── constants.ts
+│   ├── index.css
+│   ├── main.tsx
+│   ├── type.ts
+│   ├── types.ts
+│   └── views
+│       ├── AdminDashboard.tsx
+│       └── PredictorDashboard.tsx
+├── tsconfig.app.json
+├── tsconfig.json
+├── tsconfig.node.json
+└── vite.config.ts
+
 # 🔮 Canton Prediction Market
 
 # React + TypeScript + Vite
