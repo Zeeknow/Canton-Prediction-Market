@@ -1,74 +1,73 @@
+# 🔮 Canton Prediction Market
+
 # React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based frontend prototype for the **Canton Hackathon**. This MVP simulates a decentralized prediction market designed to showcase Canton's core privacy features, including sub-transaction privacy and GDPR-compliant redaction.
 
-Currently, two official plugins are available:
+## 🎯 Hackathon Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This project is a high-fidelity **UI/UX prototype**. The frontend is fully built in React, but the "backend" logic is mocked using `useState` to simulate the user flow.
 
-## React Compiler
+The UI is designed to explicitly demonstrate two core Canton concepts:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 1\. 🤫 Sub-Transaction Privacy (The "Blind" Oracle)
 
-## Expanding the ESLint configuration
+  * **The Feature:** The **Oracle Dashboard** is financially blind.
+  * **How to See It:** Click the "Oracle" button in the header.
+  * **What it Demonstrates:** The UI simulates that the Oracle can *only* see the market question (e.g., "Will ETH pass $4000?") and submit an outcome ("Yes" or "No"). They have no access to who bet, how much was bet, or any financial data. This demonstrates how a real Daml choice would give the Oracle a private, minimal view of the transaction, ensuring their neutrality.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 2\. ⚖️ GDPR-Compliant Redaction (The "Right to be Forgotten")
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+  * **The Feature:** The **Market Operator Dashboard** includes an "Archive & Redact" feature.
+  * **How to See It:** Click the "Operator" button, find a "resolved" market in the table, and click "Archive & Redact".
+  * **What it Demonstrates:** This modal explains a simulated Daml workflow where a `SettledMarket` contract (containing PII like the list of participants) is archived and replaced by a new, `RedactedMarket` contract. This final contract maintains a provable audit trail *without* storing any personal data, demonstrating compliance with data privacy regulations like GDPR.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+-----
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🛠️ Tech Stack
+
+  * **Frontend:** React (built with Vite)
+  * **Language:** TypeScript
+  * **Styling:** Tailwind CSS
+  * **Icons:** Lucide-React
+
+-----
+
+## 🚀 Getting Started (How to Run This Prototype)
+
+This is a standalone frontend prototype and **does not require a Daml ledger** to run.
+
+### 1\. Clone the repository
+
+```bash
+git clone [YOUR_GITHUB_REPO_URL_HERE]
+cd new-frontend
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2\. Install dependencies
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+This will install React, Tailwind, and all other necessary packages.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
-# Canton-Prediction-Market
+
+### 3\. Run the development server
+
+This command starts the app.
+
+```bash
+npm run dev
+```
+
+Your app will be running at `http://localhost:5173`.
+
+-----
+
+## 🧑‍🔬 How to Use the Prototype
+
+The app is a mock-up with a simple role-switcher at the top of the page. Click the buttons to explore the different user perspectives:
+
+  * **🧑‍💻 Predictor:** The main user view. You can browse markets by category and click "Bet YES" or "Bet NO" to simulate placing a bet.
+  * **💼 Operator:** The admin view. You can simulate creating new markets and performing the GDPR-compliant "Archive & Redact" action on markets that the Oracle has resolved.
+  * **⚖️ Oracle:** The "blind" data provider. You can only see markets that are "pending resolution" and submit the final outcome.
