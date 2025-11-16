@@ -77,7 +77,7 @@ This is a standalone frontend prototype and **does not require a Daml ledger** t
 ### 1\. Clone the repository
 
 ```bash
-git clone [YOUR_GITHUB_REPO_URL_HERE]
+git clone Zeeknow/Canton-Prediction-Market
 cd new-frontend
 ```
 
