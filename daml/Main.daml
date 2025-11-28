@@ -1,0 +1,107 @@
+module Main where
+
+import Daml.Script
+import DA.Set (Set)
+import qualified DA.Set as Set
+import DA.Optional (isSome, fromSome)
+
+-- 1. DATA STRUCTURES
+-- Matches your frontend's "financialData" structure
+data Bet = Bet {
+  bettor : Party,
+  amount : Decimal,
+  betOn : Bool -- True for "Yes", False for "No"
+} deriving (Eq, Show)
+
+-- 2. THE ACTIVE MARKET
+-- This template manages the active betting phase
+template PredictionMarket
+  with
+    operator : Party
+    oracle : Party
+    predictionText : Text
+    category : Text
+    participants : Set Party
+    bets : [Bet]
+    outcome : Optional Bool
+  where
+    signatory operator
+    observer Set.toList participants, oracle
+
+    -- Predictors use this choice to place bets
+    choice Place_Bet : ContractId PredictionMarket
+      with
+        bettor : Party
+        amount : Decimal
+        betOn : Bool
+      controller bettor
+      do
+        let newBet = Bet with ..
+        create this with
+          participants = Set.insert bettor participants
+          bets = newBet :: bets
+
+    -- PRIVACY FEATURE: THE BLIND ORACLE
+    -- The Oracle resolves the market but does NOT see the 'bets' 
+    -- in the resulting transaction due to sub-transaction privacy.
+    choice Resolve_Market : ContractId PredictionMarket
+      with
+        trueOutcome : Bool
+      controller oracle
+      do
+        assert (outcome == None)
+        create this with
+          outcome = Some trueOutcome
+
+    -- OPERATOR SETTLEMENT
+    choice Settle_Market : ContractId SettledMarket
+      controller operator
+      do
+        assert (isSome outcome)
+        let resolvedOutcome = fromSome outcome
+        
+        -- Transition to SettledMarket (which still holds PII)
+        create SettledMarket with
+          operator = operator
+          predictionText = predictionText
+          outcome = resolvedOutcome
+          participants = Set.toList participants
+        
+        archive self
+
+-- 3. THE SETTLED MARKET (Contains PII)
+template SettledMarket
+  with
+    operator : Party
+    predictionText : Text
+    outcome : Bool
+    participants : [Party] -- <-- This is PII (Personal Identifiable Information)
+  where
+    signatory operator
+    observer participants
+
+    -- GDPR COMPLIANCE FEATURE: REDACTION
+    -- This choice allows the operator to scrub PII from the ledger state
+    choice Archive_And_Redact : ContractId RedactedMarket
+      controller operator
+      do
+        -- Create the sanitized record
+        create RedactedMarket with
+          operator = operator
+          predictionText = predictionText
+          outcome = outcome
+          redactedNote = "PII redacted for GDPR compliance."
+        
+        -- Archive this contract to remove PII from active state
+        archive self
+
+-- 4. THE REDACTED RECORD (Audit Trail)
+-- Compliant with "Right to be Forgotten"
+template RedactedMarket
+  with
+    operator : Party
+    predictionText : Text
+    outcome : Bool
+    redactedNote : Text
+  where
+    signatory operator
