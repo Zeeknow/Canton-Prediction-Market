@@ -1,3 +1,28 @@
+# 📂 Project Structure
+.
+├── README.md
+├── daml
+│   └── Main.daml
+├── eslint.config.js
+├── index.html
+├── package-lock.json
+├── package.json
+├── postcss.config.cjs
+├── postcss.config.js
+├── public
+│   └── vite.svg
+├── src
+│   ├── App.css
+│   ├── App.tsx
+│   ├── assets
+│   │   └── react.svg
+│   ├── index.css
+│   └── main.tsx
+├── tsconfig.app.json
+├── tsconfig.json
+├── tsconfig.node.json
+└── vite.config.ts
+
 # 🔮 Canton Prediction Market
 
 # React + TypeScript + Vite
